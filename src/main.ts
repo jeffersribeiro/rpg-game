@@ -1,10 +1,13 @@
 import "dotenv/config";
 
-// import "@/entities/character";
+import { startScreenContainer } from "./screens";
 
-if (!process.env.IS_TS_NODE) {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require("module-alias/register");
+import { moduleAliasConfig } from "./configs";
+
+async function main(): Promise<void> {
+  moduleAliasConfig();
+
+  await startScreenContainer();
 }
 
-console.log("opaa");
+main();
