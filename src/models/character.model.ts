@@ -101,7 +101,7 @@ export class Character {
     this.health -= damage;
   }
 
-  public useItem(itemIndex: number): string {
+  public useItem(itemIndex: number): void {
     if (itemIndex < 0 || itemIndex >= this.items.length) {
       throw new InvalidItemException();
     }
@@ -120,7 +120,5 @@ export class Character {
 
     // Remove o item do inventário após uso
     this.items.splice(itemIndex, 1);
-
-    return `${this.name} usou ${item.getName()}.`;
   }
 }
