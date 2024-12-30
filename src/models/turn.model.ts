@@ -1,15 +1,10 @@
-import { CharacterIAScript } from "@/scripts";
+import { registersState, turnState } from "@/states";
+import { GenericErrorException } from "@/expections";
+
 import { Character } from "./character.model";
 
 export class Turn {
-  private characters: Character[];
-  private currentTurn = 1;
-  private actionQueue: Character[] = [];
-  private currentCharacterIndex = 0;
-
-  constructor(characters: Character[]) {
-    this.characters = [...characters];
-  }
+  constructor() {}
 
   // Embaralha os personagens para definir a ordem inicial do turno.
   private shuffleCharacters(characters: Character[]): Character[] {
@@ -22,61 +17,76 @@ export class Turn {
   }
 
   public generateTurnOrder(): Character[] {
-    const randomPlayerOrder = this.shuffleCharacters(this.characters);
-    this.actionQueue = randomPlayerOrder;
+    const randomPlayerOrder = this.shuffleCharacters(turnState.characters);
+    turnState.characters = randomPlayerOrder;
     return randomPlayerOrder;
   }
 
   public getCurrentTurn(): number {
-    return this.currentTurn;
+    return turnState.currentTurn;
   }
 
   public goToNextTurn(): void {
-    if (this.characters.length) {
-      this.currentTurn++;
+    this.verifyIfCharacterIsDeadAndRemoveFromTurn();
+
+    if (turnState.characters.length) {
+      turnState.actionQueue = turnState.characters;
+      turnState.currentTurn++;
     }
   }
 
   public goToNextCharacterAction(): void {
-    if (this.actionQueue.length) {
-      this.actionQueue = this.actionQueue.slice(this.actionQueue.length, 1);
+    if (turnState.actionQueue.length) {
+      turnState.actionQueue = turnState.actionQueue.splice(
+        1,
+        turnState.actionQueue.length,
+      );
     }
   }
 
   public getCharactersActionsOrder(): Character[] {
-    return this.actionQueue;
+    return turnState.actionQueue;
   }
 
   public getCurrentCharacterActionTurn(): Character {
-    return this.actionQueue[0];
+    return turnState.actionQueue[0];
   }
 
   public getCharacters(): Character[] {
-    return this.characters;
+    return turnState.characters;
+  }
+
+  public getPlayer(): Character | undefined {
+    return turnState.characters.find((c) => c.isPlayer());
   }
 
   public verifyIfCharacterIsDeadAndRemoveFromTurn(): void {
-    const character = this.characters.find((c) => c.getCurrentHealth() <= 0);
+    const character = turnState.characters.find(
+      (c) => c.getCurrentHealth() <= 0,
+    );
     if (character) {
-      const playerIndex = this.characters.indexOf(character);
+      const playerIndex = turnState.characters.indexOf(character);
 
-      this.characters.splice(playerIndex, 1);
+      turnState.characters.splice(playerIndex, 1);
     }
   }
 
-  public processTurn(): string {
+  public processTurn(): void {
     const currentCharacter = this.getCurrentCharacterActionTurn();
 
     if (currentCharacter.isPlayer()) {
-      return `É a vez de ${currentCharacter.getName()} (Jogador).`;
-      // Aqui você chamaria a lógica de entrada do jogador.
-    } else {
-      const ia = new CharacterIAScript(currentCharacter);
-      ia.executeAction(this.characters.filter((c) => c !== currentCharacter));
+      registersState.push(
+        `É a vez de ${currentCharacter.getName()} (Jogador).`,
+      );
 
-      return `É a vez de ${currentCharacter.getName()} (IA).`;
+      throw new GenericErrorException(
+        "Ação do jogador requerida. Delegue para a interface de controle.",
+      );
+    } else {
+      registersState.push(`É a vez de ${currentCharacter.getName()} (IA).`);
     }
 
+    registersState.push(`Fim da acão do jodador ${currentCharacter.getName()}`);
     this.goToNextCharacterAction();
   }
 }

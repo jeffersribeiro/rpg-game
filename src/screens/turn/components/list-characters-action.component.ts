@@ -7,7 +7,6 @@ export function printListOfCharacterActionComponent(
   const printEqualSymbol = (): void => print("=".repeat(50));
   const printLineSymbol = (): void => print("-".repeat(50));
 
-  console.clear();
   printEqualSymbol();
   print("  Lista de Personagens");
   printEqualSymbol();

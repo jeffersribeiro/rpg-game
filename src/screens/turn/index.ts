@@ -1,16 +1,14 @@
 import { Turn } from "@/models";
-import { turnScreen } from "./turn.screen";
+import { playerState, enemiesState, turnState } from "@/states";
 
-import { playerState, enemiesState } from "@/states";
+import { turnScreen } from "./turn.screen";
 
 export async function turnScreenContainer(): Promise<void> {
   if (!playerState.player) process.exit(0);
 
-  const turnCharacters = [playerState.player, ...enemiesState];
+  turnState.characters = [playerState.player, ...enemiesState];
 
-  const turnManager = new Turn(turnCharacters);
+  const turnManager = new Turn();
 
-  turnManager.generateTurnOrder();
-
-  return turnScreen(turnManager);
+  return await turnScreen(turnManager);
 }

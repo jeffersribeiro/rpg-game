@@ -1,5 +1,6 @@
-import { DeadCharacterException, GenericErrorException } from "@/expections";
 import { Character } from "@/models";
+import { registersState } from "@/states";
+import { DeadCharacterException, GenericErrorException } from "@/expections";
 
 export class CharacterIAScript {
   private character: Character;
@@ -8,7 +9,7 @@ export class CharacterIAScript {
     this.character = character;
   }
 
-  public executeAction(targets: Character[]): string {
+  public executeAction(targets: Character[]): void {
     if (this.character.getCurrentHealth() <= 0) {
       throw new DeadCharacterException(
         `${this.character.getName()} está fora de combate e não pode agir.`,
@@ -26,9 +27,13 @@ export class CharacterIAScript {
     const skill = this.character.getSkills()[0]; // Exemplo: usar a primeira habilidade
     if (skill) {
       target.takeDamage(skill.getAttack());
-      return `${this.character.getName()} usa ${skill.getName()} em ${target.getName()}!`;
+      registersState.push(
+        `${this.character.getName()} usa ${skill.getName()} em ${target.getName()}!`,
+      );
     } else {
-      return `${this.character.getName()} não tem habilidades para usar.`;
+      registersState.push(
+        `${this.character.getName()} não tem habilidades para usar.`,
+      );
     }
   }
 

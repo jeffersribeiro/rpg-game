@@ -1,10 +1,8 @@
-import { print, getInput } from "@/utils";
-
 import { Character } from "@/models";
-
-import { printCharacterSelectionListComponent } from "@/screens/components";
+import { print, getInput } from "@/utils";
 import { PlayerStateInterface } from "@/interfaces";
 import { turnScreenContainer } from "@/screens/turn";
+import { printCharacterSelectionListComponent } from "@/screens/components";
 
 export async function characterSelectionScreen(
   playerState: PlayerStateInterface,
