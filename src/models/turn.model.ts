@@ -17,8 +17,10 @@ export class Turn {
   }
 
   public generateTurnOrder(): Character[] {
-    const randomPlayerOrder = this.shuffleCharacters(turnState.characters);
-    turnState.characters = randomPlayerOrder;
+    const randomPlayerOrder = [...turnState.characters];
+    turnState.participants = [...randomPlayerOrder];
+    turnState.characters = [...randomPlayerOrder];
+    turnState.actionQueue = [...randomPlayerOrder];
     return randomPlayerOrder;
   }
 
@@ -30,17 +32,14 @@ export class Turn {
     this.verifyIfCharacterIsDeadAndRemoveFromTurn();
 
     if (turnState.characters.length) {
-      turnState.actionQueue = turnState.characters;
+      turnState.actionQueue = [...turnState.characters];
       turnState.currentTurn++;
     }
   }
 
   public goToNextCharacterAction(): void {
     if (turnState.actionQueue.length) {
-      turnState.actionQueue = turnState.actionQueue.splice(
-        1,
-        turnState.actionQueue.length,
-      );
+      turnState.actionQueue.shift();
     }
   }
 

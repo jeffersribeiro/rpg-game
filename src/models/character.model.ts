@@ -66,7 +66,7 @@ export class Character {
   }
 
   public getPercengeHealth(): number {
-    return (this.health / this.maxHealth) * 100;
+    return parseInt(((this.health / this.maxHealth) * 100).toFixed(0));
   }
 
   public getpercentageMana(): number {

@@ -14,4 +14,5 @@ export const charactersState: Character[] = [
 export const enemiesState: Character[] = [
   new OrkCharacter(),
   new WolfCharacter(),
+  new WizardCharacter(),
 ];
