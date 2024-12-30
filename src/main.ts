@@ -7,6 +7,7 @@ import { moduleAliasConfig } from "./configs";
 async function main(): Promise<void> {
   moduleAliasConfig();
   console.clear();
+
   await startScreenContainer();
 }
 

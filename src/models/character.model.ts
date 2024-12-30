@@ -77,8 +77,8 @@ export class Character {
     return this.health;
   }
 
-  public setMana(): number {
-    return this.mana;
+  public setMana(mana: number): number {
+    return (this.mana = mana);
   }
 
   public getSkills(): Skill[] {

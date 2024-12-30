@@ -1,6 +1,6 @@
-import { TurnStateInterface } from "@/interfaces";
+import { TurnManagerStateInterface } from "@/interfaces";
 
-export const turnState: TurnStateInterface = {
+export const turnState: TurnManagerStateInterface = {
   participants: [],
   characters: [],
   currentTurn: 1,

@@ -1,14 +1,14 @@
-import { Turn } from "@/models";
+import { Skill, TurnManager } from "@/models";
 import { registersState, turnState } from "@/states";
 import { print } from "@/utils/output.util";
 
 import { printListOfCharacterActionComponent } from "./components";
 import { CharacterIAScript } from "@/scripts";
 import { getInput } from "@/utils";
+import { printListCharacterSkills } from "./components/list-character-available-skills.component";
 
-export async function turnManagement(turnManager: Turn): Promise<void> {
+export async function turnManagement(turnManager: TurnManager): Promise<void> {
   while (turnState.characters.length > 1) {
-    console.clear();
     print(`=== Início do Turno ${turnManager.getCurrentTurn()} ===`);
 
     while (turnState.actionQueue.length > 0) {
@@ -18,8 +18,31 @@ export async function turnManagement(turnManager: Turn): Promise<void> {
       try {
         if (isPlayerTurn) {
           // Ação do jogador
+
+          const availableSkills = currentCharacter.getSkills();
+
           print(`É a vez de ${currentCharacter.getName()} (Jogador).`);
-          const skill = currentCharacter.getSkills()[0];
+
+          printListCharacterSkills(availableSkills);
+          const selectedSkillChoice = await getInput(
+            "Digite o número da habilidade desejada: ",
+          );
+
+          const selectedSkillIndex = parseInt(selectedSkillChoice) - 1;
+
+          let skill: Skill | null = null;
+
+          if (
+            selectedSkillIndex >= 0 &&
+            selectedSkillIndex < availableSkills.length
+          ) {
+            skill = availableSkills[selectedSkillIndex];
+            print(`Você escolheu: ${skill.getName()} (${skill.getAttack()})`);
+          } else {
+            print("Opção inválida. Tente novamente.");
+            continue; // Reexibe a vez do jogador sem avançar o turno
+          }
+
           const targets = turnState.characters.filter(
             (c) => c !== currentCharacter,
           );
@@ -31,6 +54,7 @@ export async function turnManagement(turnManager: Turn): Promise<void> {
           const choice = await getInput(
             "Digite o número do personagem desejado: ",
           );
+
           const selectedIndex = parseInt(choice) - 1;
 
           if (selectedIndex >= 0 && selectedIndex < targets.length) {
@@ -41,6 +65,10 @@ export async function turnManagement(turnManager: Turn): Promise<void> {
 
             if (skill) {
               target.takeDamage(skill.getAttack());
+              currentCharacter.setMana(
+                currentCharacter.getCurrentMana() - skill.getCost(),
+              );
+
               registersState.push(
                 `${currentCharacter.getName()} usa ${skill.getName()} em ${target.getName()}!`,
               );
@@ -79,7 +107,7 @@ export async function turnManagement(turnManager: Turn): Promise<void> {
   print("=== FIM DO JOGO ===");
 }
 
-export async function turnScreen(turnManager: Turn): Promise<void> {
+export async function turnScreen(turnManager: TurnManager): Promise<void> {
   print("=== Inicio dos Turnos ===");
 
   turnManager.generateTurnOrder(); // Define a ordem inicial

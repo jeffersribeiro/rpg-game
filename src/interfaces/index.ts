@@ -1,2 +1,2 @@
-export * from "./player_states.interface";
-export * from "./turn_states.interface";
+export * from "./player-states.interface";
+export * from "./turn-states.interface";

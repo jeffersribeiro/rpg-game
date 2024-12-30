@@ -3,6 +3,7 @@
     "require": ["tsconfig-paths/register", "dotenv/config"]
   },
   "compilerOptions": {
+    "typeRoots": ["./src/@types", "./node_modules/@types"],
     "target": "es2016",
     "module": "commonjs",
     "rootDir": "./",

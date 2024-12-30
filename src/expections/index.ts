@@ -1,3 +1,3 @@
-export * from "./invalid_item.exception";
+export * from "./invalid-item.exception";
 export * from "./generic-error.exception";
-export * from "./dead_character.exception";
+export * from "./dead-character.exception";

@@ -1,4 +1,4 @@
-import { Turn } from "@/models";
+import { TurnManager } from "@/models";
 import { playerState, enemiesState, turnState } from "@/states";
 
 import { turnScreen } from "./turn.screen";
@@ -8,7 +8,7 @@ export async function turnScreenContainer(): Promise<void> {
 
   turnState.characters = [playerState.player, ...enemiesState];
 
-  const turnManager = new Turn();
+  const turnManager = new TurnManager();
 
   return await turnScreen(turnManager);
 }
